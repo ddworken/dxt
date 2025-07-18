@@ -3,7 +3,7 @@ import type {
   DxtUserConfigValues,
   Logger,
   McpServerConfig,
-} from "../types";
+} from "../types.js";
 
 /**
  * This file contains utility functions for handling DXT configuration,
@@ -183,6 +183,10 @@ interface HasRequiredConfigMissingOptions {
   userConfig?: DxtUserConfigValues;
 }
 
+function isInvalidSingleValue(value: unknown): boolean {
+  return value === undefined || value === null || value === "";
+}
+
 /**
  * Check if an extension has missing required configuration
  * @param manifest The extension manifest
@@ -203,10 +207,9 @@ export function hasRequiredConfigMissing({
     if (configOption.required) {
       const value = config[key];
       if (
-        value === undefined ||
-        value === null ||
-        value === "" ||
-        (Array.isArray(value) && value.length === 0)
+        isInvalidSingleValue(value) ||
+        (Array.isArray(value) &&
+          (value.length === 0 || value.some(isInvalidSingleValue)))
       ) {
         return true;
       }

@@ -1,7 +1,7 @@
 import { readFileSync } from "fs";
 import { join } from "path";
 
-import { DxtManifestSchema } from "../src/schemas";
+import { DxtManifestSchema } from "../src/schemas.js";
 
 describe("DxtManifestSchema", () => {
   it("should validate a valid manifest", () => {
@@ -65,15 +65,11 @@ describe("DxtManifestSchema", () => {
           args: ["main.py"],
           env: { PYTHONPATH: "." },
         },
-        runtime_requirements: {
-          python: ">=3.8",
-        },
       },
       tools: [
         {
           name: "my_tool",
           description: "A useful tool",
-          input_schema: { type: "object" },
         },
       ],
       keywords: ["test", "example"],
@@ -84,13 +80,6 @@ describe("DxtManifestSchema", () => {
         runtimes: {
           python: ">=3.8",
           node: ">=16.0.0",
-        },
-      },
-      settings: {
-        configurable: true,
-        schema: {
-          type: "object",
-          properties: {},
         },
       },
       user_config: {
