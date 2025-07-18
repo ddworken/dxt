@@ -40,6 +40,14 @@ export async function unpackExtension({
       if (Object.prototype.hasOwnProperty.call(decompressed, relativePath)) {
         const data = decompressed[relativePath];
         const fullPath = join(finalOutputDir, relativePath);
+        
+        // Prevent zip slip attacks by validating the resolved path
+        const normalizedPath = resolve(fullPath);
+        const normalizedOutputDir = resolve(finalOutputDir);
+        if (!normalizedPath.startsWith(normalizedOutputDir + "/") && normalizedPath !== normalizedOutputDir) {
+          throw new Error(`Path traversal attempt detected: ${relativePath}`);
+        }
+        
         const dir = join(fullPath, "..");
         if (!existsSync(dir)) {
           mkdirSync(dir, { recursive: true });
